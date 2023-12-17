@@ -1,6 +1,8 @@
 //import java.util.concurrent.ExecutorService;
 //import java.util.concurrent.Executors;
 
+import java.util.concurrent.locks. *;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -68,6 +70,7 @@ private static class AddPennyTask implements Runnable{
 }
 
 private static class Account {
+    private static Lock lock = new ReentrantLock();
     private int balance = 0;
 
     public int getBalance(){
@@ -75,17 +78,21 @@ private static class Account {
     }
 
     public synchronized void deposit(int amount){
-        int newBalance = balance + amount;
+        lock.lock();
     
 
     try{
+        int newBalance = balance + amount;
+
         Thread.sleep(5);
+
+        balance = newBalance;
     }
     catch (InterruptedException ex){
-
     }
-
-    balance = newBalance;
+    finally{
+        lock.unlock();
+    }
 }
 }
 }
